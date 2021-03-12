@@ -1,0 +1,9 @@
+[package]
+name = "medialibre"
+version = "0.1.0"
+authors = ["cerebralcourt <0hhvxhv9@anonaddy.me>"]
+edition = "2018"
+
+[dependencies]
+actix-web = "3"
+mongodb = "1.1"
