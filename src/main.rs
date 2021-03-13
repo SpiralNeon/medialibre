@@ -2,7 +2,7 @@
 extern crate serde_json;
 
 use actix_web::{web, App, HttpServer};
-use mongodb::{Client, options::ClientOptions};
+use mongodb::{Client, Database};
 use handlebars::Handlebars;
 
 mod api;
@@ -10,7 +10,7 @@ mod r#static;
 mod util;
 
 struct AppData<'a> {
-  db: mongodb::Database,
+  db: Database,
   hb: Handlebars<'a>,
 }
 
@@ -20,8 +20,7 @@ async fn main() -> std::io::Result<()> {
     Ok(val) => val,
     Err(_) => "mongodb://localhost:27017".into(),
   };
-  let client_options = ClientOptions::parse(&mongodb_uri).await.unwrap();
-  let client = Client::with_options(client_options).unwrap();
+  let client = Client::with_uri_str(&mongodb_uri).await.unwrap();
   let db = client.database("medialibre");
 
   let mut hb = Handlebars::new();

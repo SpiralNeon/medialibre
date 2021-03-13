@@ -1,0 +1,8 @@
+{{#>layout title="New Artist | MediaLibre/Music"}}
+  <h1>New Artist</h1>
+  <form method="POST" action="/api/music/artist">
+  	<label for="artist-name">Name:</label><br />
+    <input id="artist-name" type="text" required /><br />
+    <input type="submit" value="Submit" />
+  </form>
+{{/layout}}
