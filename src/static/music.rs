@@ -1,6 +1,6 @@
 use crate::{AppData, util::language::Language, api::music::artist::Artist};
 use actix_web::{web, HttpResponse};
-use mongodb::bson::{doc, from_bson, Bson};
+use mongodb::bson::{doc, from_bson, oid::ObjectId, Bson};
 
 async fn new_artist(app: web::Data<AppData<'_>>) -> HttpResponse {
   let data = json!({});
@@ -11,7 +11,8 @@ async fn new_artist(app: web::Data<AppData<'_>>) -> HttpResponse {
 
 async fn artist(app: web::Data<AppData<'_>>, web::Path(artist_id): web::Path<String>) -> HttpResponse {
   let artists = app.db.collection("music_artists");
-  let artist_data = artists.find_one(doc! { "_id": artist_id }, None).await.unwrap().unwrap();
+  let id = ObjectId::with_string(&artist_id).unwrap();
+  let artist_data = artists.find_one(doc! { "_id": id }, None).await.unwrap().unwrap();
   let artist: Artist = from_bson(Bson::Document(artist_data)).unwrap();
 
   let name = &artist.name.locale_names.get(&Language::EN).unwrap();

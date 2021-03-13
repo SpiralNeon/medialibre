@@ -2,7 +2,7 @@ use crate::{AppData, util::language::Language};
 use std::collections::HashMap;
 use actix_web::{web, HttpResponse};
 use serde::{Serialize, Deserialize};
-use mongodb::bson::{self, doc};
+use mongodb::bson::{self, doc, oid::ObjectId};
 
 #[derive(Serialize, Deserialize)]
 pub struct ArtistName {
@@ -84,14 +84,16 @@ async fn create_artist(app: web::Data<AppData<'_>>, form: web::Form<CreateArtist
   };
 
   let artists = app.db.collection("music_artists");
-  artists.insert_one(bson::to_document(&artist).unwrap(), None).await.unwrap();
+  let id = artists.insert_one(bson::to_document(&artist).unwrap(), None).await.unwrap();
+  println!("{:?}", id.inserted_id.as_object_id().unwrap().to_hex());
 
   HttpResponse::Ok().body("")
 }
 
 async fn get_artist(app: web::Data<AppData<'_>>, web::Path(artist_id): web::Path<String>) -> HttpResponse {
   let artists = app.db.collection("music_artists");
-  let artist_data = artists.find_one(doc! { "_id": artist_id }, None).await.unwrap().unwrap();
+  let id = ObjectId::with_string(&artist_id).unwrap();
+  let artist_data = artists.find_one(doc! { "_id": id }, None).await.unwrap().unwrap();
   let artist: Artist = bson::from_document(artist_data).unwrap();
 
   HttpResponse::Ok().json(artist)
@@ -99,8 +101,8 @@ async fn get_artist(app: web::Data<AppData<'_>>, web::Path(artist_id): web::Path
 
 pub fn config(cfg: &mut web::ServiceConfig) {
   cfg
-    .route("/", web::get().to(|| HttpResponse::Ok()))
-    .route("/", web::post().to(create_artist))
+    .route("", web::get().to(|| HttpResponse::Ok()))
+    .route("", web::post().to(create_artist))
     .service(
       web::resource("/{artist_id}")
         .route(web::get().to(get_artist))
