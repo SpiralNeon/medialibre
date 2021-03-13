@@ -1,11 +1,17 @@
+#[macro_use]
+extern crate serde_json;
+
 use actix_web::{web, App, HttpServer};
 use mongodb::{Client, options::ClientOptions};
+use handlebars::Handlebars;
 
 mod api;
+mod r#static;
 mod util;
 
-struct State {
-  mongo: mongodb::Database,
+struct AppData<'a> {
+  db: mongodb::Database,
+  hb: Handlebars<'a>,
 }
 
 #[actix_web::main]
@@ -16,13 +22,21 @@ async fn main() -> std::io::Result<()> {
   };
   let client_options = ClientOptions::parse(&mongodb_uri).await.unwrap();
   let client = Client::with_options(client_options).unwrap();
+  let db = client.database("medialibre");
+
+  let mut hb = Handlebars::new();
+  hb
+    .register_templates_directory(".hbs", "./static/templates")
+    .unwrap();
+
+  let app = AppData { db, hb };
+  let app_ref = web::Data::new(app);
 
   HttpServer::new(move || {
     App::new()
-      .data(State {
-        mongo: client.database("medialibre"),
-      })
+      .app_data(app_ref.clone())
       .service(web::scope("/api").configure(api::config))
+      .service(web::scope("/").configure(r#static::config))
   })
     .bind("127.0.0.1:3000")?
     .run()
