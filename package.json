@@ -1,0 +1,32 @@
+{
+  "name": "medialibre",
+  "version": "0.1.0",
+  "repository": "https://github.com/SpiralNeon/medialibre.git",
+  "author": "Spiral Neon",
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "watch:dev": "NODE_ENV=development gulp watch --development",
+    "watch:prod": "NODE_ENV=production gulp watch --production",
+    "build:dev": "NODE_ENV=development gulp build --development",
+    "build:prod": "NODE_ENV=production gulp build --production"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.8",
+    "@babel/preset-env": "^7.13.10",
+    "autoprefixer": "^10.2.5",
+    "babel-loader": "^8.2.2",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-csso": "^4.0.1",
+    "gulp-gzip": "^1.4.2",
+    "gulp-mode": "^1.0.2",
+    "gulp-postcss": "^9.0.0",
+    "gulp-print-spacesavings": "^1.0.3",
+    "gulp-sourcemaps": "^3.0.0",
+    "postcss": "^8.2.8",
+    "tailwindcss": "^2.0.3",
+    "webpack": "^5.25.0",
+    "webpack-stream": "^6.1.2"
+  }
+}
