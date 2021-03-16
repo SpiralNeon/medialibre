@@ -87,7 +87,9 @@ async fn create_artist(app: web::Data<AppData<'_>>, form: web::Form<CreateArtist
   let res = artists.insert_one(bson::to_document(&artist).unwrap(), None).await.unwrap();
   let id = res.inserted_id.as_object_id().unwrap().to_hex();
 
-  HttpResponse::Ok().body(id)
+  HttpResponse::SeeOther()
+    .header("Location", format!("/music/artist/{}", id))
+    .body(id)
 }
 
 async fn get_artist(app: web::Data<AppData<'_>>, web::Path(artist_id): web::Path<String>) -> HttpResponse {

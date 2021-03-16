@@ -75,8 +75,8 @@ async fn main() -> io::Result<()> {
       .wrap(Logger::default())
       .route("/{file}.css", web::get().to(handle_css))
       .route("/{file}.js", web::get().to(handle_js))
-      .service(web::scope("/").configure(r#static::config))
       .service(web::scope("/api").configure(api::config))
+      .service(web::scope("/").configure(r#static::config))
   })
     .bind("127.0.0.1:3000")?
     .run()
