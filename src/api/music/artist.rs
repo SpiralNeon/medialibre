@@ -42,17 +42,28 @@ pub struct Artist {
 
 #[derive(Deserialize)]
 struct CreateArtist {
+  pub r#type: String,
   pub name: String,
+  pub first_name: String,
+  pub last_name: String,
+  pub middle_name: String,
 }
 
-async fn create_artist(app: web::Data<AppData<'_>>, form: web::Form<CreateArtist>) -> HttpResponse {
+async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -> HttpResponse {
+  let group = form.r#type == "group";
+
   let mut locale_names = HashMap::new();
   locale_names.insert(Language::EN, form.name.clone());
+
+  let first_name = if form.first_name.is_empty() { None } else { Some(form.first_name.clone()) };
+  let last_name = if form.last_name.is_empty() { None } else { Some(form.last_name.clone()) };
+  let middle_name = if form.middle_name.is_empty() { None } else { Some(form.middle_name.clone()) };
+
   let name = ArtistName {
-    locale_names: locale_names,
-    first_name: None,
-    last_name: None,
-    middle_name: None,
+    locale_names,
+    first_name,
+    last_name,
+    middle_name,
   };
 
   let mut bio = HashMap::new();
@@ -71,7 +82,7 @@ async fn create_artist(app: web::Data<AppData<'_>>, form: web::Form<CreateArtist
   };
 
   let artist = Artist {
-    group: true,
+    group,
     name,
     birth: date.clone(),
     death: date,
@@ -92,7 +103,7 @@ async fn create_artist(app: web::Data<AppData<'_>>, form: web::Form<CreateArtist
     .body(id)
 }
 
-async fn get_artist(app: web::Data<AppData<'_>>, web::Path(artist_id): web::Path<String>) -> HttpResponse {
+async fn get_artist(app: web::Data<AppData>, web::Path(artist_id): web::Path<String>) -> HttpResponse {
   let artists = app.db.collection("music_artists");
   let id = ObjectId::with_string(&artist_id).unwrap();
   let artist_data = artists.find_one(doc! { "_id": id }, None).await.unwrap().unwrap();

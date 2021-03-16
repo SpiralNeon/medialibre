@@ -1,22 +1,19 @@
-#[macro_use]
-extern crate serde_json;
-
 use std::{fs, collections::HashMap, io};
 use actix_web::{web, middleware::Logger, App, HttpServer, HttpResponse};
 use mongodb::{Client, Database};
-use handlebars::Handlebars;
+use tera::Tera;
 
 mod api;
 mod r#static;
 mod util;
 
-struct AppData<'a> {
+struct AppData {
   db: Database,
-  hb: Handlebars<'a>,
+  tera: Tera,
   files: HashMap<String, Vec<u8>>,
 }
 
-async fn handle_css(app: web::Data<AppData<'_>>, file: web::Path<String>) -> HttpResponse {
+async fn handle_css(app: web::Data<AppData>, file: web::Path<String>) -> HttpResponse {
   let data = app.files.get(&format!("{}.css.gz", file)).unwrap().clone();
 
   HttpResponse::Ok()
@@ -25,7 +22,7 @@ async fn handle_css(app: web::Data<AppData<'_>>, file: web::Path<String>) -> Htt
     .body(data)
 }
 
-async fn handle_js(app: web::Data<AppData<'_>>, file: web::Path<String>) -> HttpResponse {
+async fn handle_js(app: web::Data<AppData>, file: web::Path<String>) -> HttpResponse {
   let data = app.files.get(&format!("{}.js.gz", file)).unwrap().clone();
 
   HttpResponse::Ok()
@@ -59,14 +56,17 @@ async fn main() -> io::Result<()> {
   let client = Client::with_uri_str(&mongodb_uri).await.unwrap();
   let db = client.database("medialibre");
 
-  let mut hb = Handlebars::new();
-  hb
-    .register_templates_directory(".hbs", "./static/templates")
-    .unwrap();
+  let tera = match Tera::new("static/templates/**/*.html") {
+    Ok(t) => t,
+    Err(e) => {
+      println!("Parsing error: {}", e);
+      std::process::exit(1);
+    }
+  };
 
   let files = load_static()?;
 
-  let app = AppData { db, hb, files };
+  let app = AppData { db, tera, files };
   let app_ref = web::Data::new(app);
 
   HttpServer::new(move || {

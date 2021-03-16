@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link type="text/css" rel="stylesheet" href="/index.css" />
+    <title>{% block title %}{% endblock title %}</title>
+  </head>
+  <body class="h-screen flex flex-col text-gray-900">
+    {% set links = [
+      "/music $ Music $ music",
+      "/anime $ Anime $ anime",
+      "/manga $ Manga $ manga",
+      "/film  $ Film  $ film" ,
+      "/games $ Games $ games",
+    ] %}
+  	<nav class="bg-purple-300">
+      <ul class="flex text-white">
+        {% for link in links %}
+          {% set link = link | split(pat="$") %}
+          {% set link_href = link[0] | trim %}
+          {% set link_name = link[1] | trim %}
+          {% set link_media = link[2] | trim %}
+          <li>
+            {% if link_media == media %}
+              <a class="block px-3 py-1 bg-purple-600" href="{{link_href}}">{{link_name}}</a>
+            {% else %}
+              <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="{{link_href}}">{{link_name}}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+    <div class="px-3 py-2 flex bg-purple-400">
+      <input type="text" id="search-input" class="rounded px-3 py-1 text-gray-900" />
+      {% if media == "music" %}
+        <select
+          id="search-category"
+          class="bg-purple-500 hover:bg-purple-600 rounded text-white mx-3 px-2 cursor-pointer"
+        >
+          <option value="artists">Artists</option>
+          <option value="releases">Releases</option>
+          <option value="labels">Labels</option>
+          <option value="genres">Genres</option>
+        </select>
+      {% endif %}
+      <button
+        id="search-button"
+        data-media="{{media}}"
+        class="rounded bg-purple-500 hover:bg-purple-600 text-white px-3"
+      >
+        Search
+      </button>
+    </div>
+    <main class="bg-purple-300 p-3 flex-grow text-gray-900s">
+      <h1 class="text-2xl font-bold text-gray-500">{% block heading %}{% endblock heading %}</h1>
+      {% block main %}{% endblock main %}
+    </main>
+    <script type="text/javascript" src="/index.js"></script>
+  </body>
+</html>
