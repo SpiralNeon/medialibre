@@ -84,10 +84,10 @@ async fn create_artist(app: web::Data<AppData<'_>>, form: web::Form<CreateArtist
   };
 
   let artists = app.db.collection("music_artists");
-  let id = artists.insert_one(bson::to_document(&artist).unwrap(), None).await.unwrap();
-  println!("{:?}", id.inserted_id.as_object_id().unwrap().to_hex());
+  let res = artists.insert_one(bson::to_document(&artist).unwrap(), None).await.unwrap();
+  let id = res.inserted_id.as_object_id().unwrap().to_hex();
 
-  HttpResponse::Ok().body("")
+  HttpResponse::Ok().body(id)
 }
 
 async fn get_artist(app: web::Data<AppData<'_>>, web::Path(artist_id): web::Path<String>) -> HttpResponse {

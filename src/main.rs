@@ -2,7 +2,7 @@
 extern crate serde_json;
 
 use std::{fs, collections::HashMap, io};
-use actix_web::{web, App, HttpServer, HttpResponse};
+use actix_web::{web, middleware::Logger, App, HttpServer, HttpResponse};
 use mongodb::{Client, Database};
 use handlebars::Handlebars;
 
@@ -21,6 +21,15 @@ async fn handle_css(app: web::Data<AppData<'_>>, file: web::Path<String>) -> Htt
 
   HttpResponse::Ok()
     .content_type("text/css")
+    .header("content-encoding", "gzip")
+    .body(data)
+}
+
+async fn handle_js(app: web::Data<AppData<'_>>, file: web::Path<String>) -> HttpResponse {
+  let data = app.files.get(&format!("{}.js.gz", file)).unwrap().clone();
+
+  HttpResponse::Ok()
+    .content_type("text/javascript")
     .header("content-encoding", "gzip")
     .body(data)
 }
@@ -63,7 +72,9 @@ async fn main() -> io::Result<()> {
   HttpServer::new(move || {
     App::new()
       .app_data(app_ref.clone())
+      .wrap(Logger::default())
       .route("/{file}.css", web::get().to(handle_css))
+      .route("/{file}.js", web::get().to(handle_js))
       .service(web::scope("/").configure(r#static::config))
       .service(web::scope("/api").configure(api::config))
   })

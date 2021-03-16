@@ -64,8 +64,8 @@ module.exports = {
   styles,
   js,
   watch() {
-    watch("styles/**/*.css", styles)
-    watch(["src/**/*.js", "src/**/*.jsx"], js)
+    watch("static/styles/**/*.css", styles)
+    watch("static/js/**/*.js", js)
   },
   build: series(clean, parallel(styles, js)),
 }

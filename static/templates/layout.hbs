@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,26 +7,54 @@
     <link type="text/css" rel="stylesheet" href="/index.css" />
     <title>{{title}}</title>
   </head>
-  <body>
-  	<nav>
-      <ul>
+  <body class="h-screen flex flex-col">
+  	<nav class="bg-purple-300">
+      <ul class="flex text-white">
         <li>
-          <a class="block" href="/music">Music</a>
+          {{#if isMusic}}
+            <a class="block px-3 py-1 bg-purple-600" href="/music">Music</a>
+          {{else}}
+            <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="/music">Music</a>
+          {{/if}}
         </li>
         <li>
-          <a class="block" href="/anime">Anime</a>
+          <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="/anime">Anime</a>
         </li>
         <li>
-          <a class="block" href="/manga">Manga</a>
+          <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="/manga">Manga</a>
         </li>
         <li>
-          <a class="block" href="/film">Film</a>
+          <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="/film">Film</a>
         </li>
         <li>
-          <a class="block" href="/games">Games</a>
+          <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="/games">Games</a>
         </li>
       </ul>
     </nav>
-    {{> @partial-block}}
+    <div class="px-3 py-2 flex bg-purple-400">
+      <input type="text" id="search-input" class="rounded px-3 py-1 text-gray-900" />
+      {{#if isMusic}}
+        <select
+          id="search-category"
+          class="bg-purple-500 hover:bg-purple-600 rounded text-white mx-3 px-2 cursor-pointer"
+        >
+          <option value="artists">Artists</option>
+          <option value="releases">Releases</option>
+          <option value="labels">Labels</option>
+          <option value="genres">Genres</option>
+        </select>
+        <button
+          id="search-button"
+          data-media="music"
+          class="rounded bg-purple-500 hover:bg-purple-600 text-white px-3"
+        >
+          Search
+        </button>
+      {{/if}}
+    </div>
+    <main class="bg-purple-300 p-3 flex-grow text-gray-900s">
+      {{> @partial-block}}
+    </main>
+    <script type="text/javascript" src="/index.js"></script>
   </body>
 </html>
