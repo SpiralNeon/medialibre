@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{lang}}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -8,25 +8,14 @@
     <title>{% block title %}{% endblock title %}</title>
   </head>
   <body class="h-screen flex flex-col text-gray-900">
-    {% set links = [
-      "/music $ Music $ music",
-      "/anime $ Anime $ anime",
-      "/manga $ Manga $ manga",
-      "/film  $ Film  $ film" ,
-      "/games $ Games $ games",
-    ] %}
   	<nav class="bg-purple-300">
       <ul class="flex text-white">
-        {% for link in links %}
-          {% set link = link | split(pat="$") %}
-          {% set link_href = link[0] | trim %}
-          {% set link_name = link[1] | trim %}
-          {% set link_media = link[2] | trim %}
+        {% for link in locale.links %}
           <li>
-            {% if link_media == media %}
-              <a class="block px-3 py-1 bg-purple-600" href="{{link_href}}">{{link_name}}</a>
+            {% if link.media == media %}
+              <a class="block px-3 py-1 bg-purple-600" href="/{{link.media}}">{{link.name}}</a>
             {% else %}
-              <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="{{link_href}}">{{link_name}}</a>
+              <a class="block px-3 py-1 bg-purple-500 hover:bg-purple-600" href="/{{link.media}}">{{link.name}}</a>
             {% endif %}
           </li>
         {% endfor %}
@@ -52,9 +41,18 @@
       >
         Search
       </button>
+      <select id="lang" class="px-3 rounded ml-auto">
+        {% for language in languages %}
+          {% if language.short == lang %}
+            <option value="{{language.short}}" selected>{{language.long}}</option>
+          {% else %}
+            <option value="{{language.short}}">{{language.long}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
     </div>
     <main class="bg-purple-300 p-3 flex-grow text-gray-900s">
-      <h1 class="text-2xl font-bold text-gray-500">{% block heading %}{% endblock heading %}</h1>
+      <h1 class="text-2xl font-bold text-purple-900">{% block heading %}{% endblock heading %}</h1>
       {% block main %}{% endblock main %}
     </main>
     <script type="text/javascript" src="/index.js"></script>

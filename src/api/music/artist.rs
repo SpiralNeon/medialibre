@@ -1,4 +1,4 @@
-use crate::{AppData, util::language::Language};
+use crate::AppData;
 use std::collections::HashMap;
 use actix_web::{web, HttpResponse};
 use serde::{Serialize, Deserialize};
@@ -6,7 +6,7 @@ use mongodb::bson::{self, doc, oid::ObjectId};
 
 #[derive(Serialize, Deserialize)]
 pub struct ArtistName {
-  pub locale_names: HashMap<Language, String>,
+  pub locale_names: HashMap<String, String>,
   pub first_name: Option<String>,
   pub last_name: Option<String>,
   pub middle_name: Option<String>,
@@ -35,7 +35,7 @@ pub struct Artist {
   pub origin_location: Location,
   pub current_location: Location,
   pub members: Vec<String>,
-  pub bio: HashMap<Language, String>,
+  pub bio: HashMap<String, String>,
   pub images: Vec<String>,
   pub website: Option<String>,
 }
@@ -53,7 +53,7 @@ async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -
   let group = form.r#type == "group";
 
   let mut locale_names = HashMap::new();
-  locale_names.insert(Language::EN, form.name.clone());
+  locale_names.insert("en".into(), form.name.clone());
 
   let first_name = if form.first_name.is_empty() { None } else { Some(form.first_name.clone()) };
   let last_name = if form.last_name.is_empty() { None } else { Some(form.last_name.clone()) };
@@ -67,7 +67,7 @@ async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -
   };
 
   let mut bio = HashMap::new();
-  bio.insert(Language::EN, "".into());
+  bio.insert("en".into(), "".into());
 
   let date = Date {
     year: None,

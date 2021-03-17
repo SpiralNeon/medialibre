@@ -1,0 +1,16 @@
+Locale(
+  links: [
+    (media: "music", name: "Música"),
+    (media: "anime", name: "Anime"),
+    (media: "manga", name: "Manga"),
+    (media: "film", name: "Película"),
+    (media: "games", name: "Videojuegos"),
+  ],
+  languages: [
+    (short: "en", long: "Inglés"),
+    (short: "es", long: "Español"),
+    (short: "de", long: "Alemán"),
+    (short: "fr", long: "Francés"),
+    (short: "ja", long: "Japonés"),
+  ],
+)

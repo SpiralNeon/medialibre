@@ -21,8 +21,8 @@
         <tr>
           <td class="py-1 pr-3">
           	<select class="px-3 py-2 rounded">
-          	  {% for locale in locales %}
-          	  	<option value="{{locale.short}}">{{locale.long}}</option>
+          	  {% for language in locale.languages %}
+          	  	<option value="{{language.short}}">{{language.long}}</option>
           	  {% endfor %}
           	</select>
           </td>

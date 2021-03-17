@@ -1,18 +1,25 @@
-use crate::{AppData, util::language::{languages, Language}, api::music::artist::Artist};
+use crate::{AppData, util::languages, api::music::artist::Artist};
 use actix_web::{web, HttpResponse};
+use actix_session::Session;
 use mongodb::bson::{doc, from_bson, oid::ObjectId, Bson};
 use tera::Context;
 
-async fn new_artist(app: web::Data<AppData>) -> HttpResponse {
+async fn new_artist(app: web::Data<AppData>, session: Session) -> HttpResponse {
+  let lang = session.get::<String>("lang").unwrap().unwrap_or("en".into());
+
   let mut context = Context::new();
   context.insert("media", "music");
-  context.insert("locales", &languages());
+  context.insert("lang", &lang);
+  context.insert("languages", &languages());
+  context.insert("locale", &app.locales.get(&lang).unwrap());
   let body = app.tera.render("music/new/artist.html", &context).unwrap();
 
   HttpResponse::Ok().body(body)
 }
 
-async fn artist(app: web::Data<AppData>, web::Path(artist_id): web::Path<String>) -> HttpResponse {
+async fn artist(app: web::Data<AppData>, session: Session, web::Path(artist_id): web::Path<String>) -> HttpResponse {
+  let lang = session.get::<String>("lang").unwrap().unwrap_or("en".into());
+  
   let artists = app.db.collection("music_artists");
   let id = ObjectId::with_string(&artist_id).unwrap();
   let artist_data = artists.find_one(doc! { "_id": id }, None).await.unwrap().unwrap();
@@ -20,7 +27,10 @@ async fn artist(app: web::Data<AppData>, web::Path(artist_id): web::Path<String>
 
   let mut context = Context::new();
   context.insert("media", "music");
-  context.insert("name", artist.name.locale_names.get(&Language::EN).unwrap());
+  context.insert("lang", &lang);
+  context.insert("languages", &languages());
+  context.insert("locale", &app.locales.get(&lang).unwrap());
+  context.insert("name", artist.name.locale_names.get(&lang).unwrap());
   let body = app.tera.render("music/artist.html", &context).unwrap();
 
   HttpResponse::Ok().body(body)
