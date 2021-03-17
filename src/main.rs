@@ -1,9 +1,10 @@
-use std::{fs, collections::HashMap, io};
+use std::{fs, collections::HashMap, io, sync::Mutex};
 use serde::{Serialize, Deserialize};
 use env_logger::Env;
 use actix_web::{web, middleware::Logger, App, HttpServer, HttpResponse};
 use actix_session::CookieSession;
-use mongodb::{Client, Database};
+use mongodb::Database;
+use redis::Connection;
 use tera::Tera;
 
 mod api;
@@ -33,6 +34,7 @@ struct Locale {
 
 struct AppData {
   db: Database,
+  rdb: Mutex<Connection>,
   tera: Tera,
   files: HashMap<String, Vec<u8>>,
   locales: HashMap<String, Locale>,
@@ -97,8 +99,15 @@ async fn main() -> io::Result<()> {
     Ok(val) => val,
     Err(_) => "mongodb://localhost:27017".into(),
   };
-  let client = Client::with_uri_str(&mongodb_uri).await.unwrap();
+  let client = mongodb::Client::with_uri_str(&mongodb_uri).await.unwrap();
   let db = client.database("medialibre");
+
+  let redis_uri = match std::env::var("REDIS_URI") {
+    Ok(val) => val,
+    Err(_) => "redis://127.0.0.1/".into(),
+  };
+  let client = redis::Client::open(redis_uri).unwrap();
+  let rdb = Mutex::new(client.get_connection().unwrap());
 
   let tera = match Tera::new("static/templates/**/*.html") {
     Ok(t) => t,
@@ -111,7 +120,7 @@ async fn main() -> io::Result<()> {
   let files = load_files()?;
   let locales = load_locales()?;
 
-  let app = AppData { db, tera, files, locales };
+  let app = AppData { db, rdb, tera, files, locales };
   let app_ref = web::Data::new(app);
 
   HttpServer::new(move || {
