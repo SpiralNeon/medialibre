@@ -28,10 +28,10 @@
           id="search-category"
           class="bg-purple-500 hover:bg-purple-600 rounded text-white mx-3 px-2 cursor-pointer"
         >
-          <option value="artists">Artists</option>
-          <option value="releases">Releases</option>
-          <option value="labels">Labels</option>
-          <option value="genres">Genres</option>
+          <option value="artists">{{locale.category.artists}}</option>
+          <option value="releases">{{locale.category.releases}}</option>
+          <option value="labels">{{locale.category.labels}}</option>
+          <option value="genres">{{locale.category.genres}}</option>
         </select>
       {% endif %}
       <button
@@ -39,7 +39,7 @@
         data-media="{{media}}"
         class="rounded bg-purple-500 hover:bg-purple-600 text-white px-3"
       >
-        Search
+        {{locale.text.search}}
       </button>
       <select id="lang" class="px-3 rounded ml-auto">
         {% for language in languages %}

@@ -3,19 +3,19 @@
   New Artist | MediaLibre/Music"
 {% endblock title %}
 {% block heading %}
-  New Artist
+  {{locale.heading.new_artist}}
 {% endblock heading %}
 {% block main %}
   <form method="POST" action="/api/music/artist" class="bg-purple-200 p-3 mt-3">
     <div class="flex items-center text-lg">
-      <label>Type:</label>
+      <label>{{locale.text.type}}:</label>
       <input type="radio" class="ml-3 mr-1" id="type-group" name="type" value="group" checked />
-      <label for="type-group">Group</label>
+      <label for="type-group">{{locale.text.group}}</label>
       <input type="radio" class="ml-3 mr-1" id="type-person" name="type" value="person" />
-      <label for="type-person">Person</label>
+      <label for="type-person">{{locale.text.person}}</label>
     </div>
 
-  	<label for="en-name" class="inline-block text-lg mt-5">Artist Name:</label>
+  	<label for="en-name" class="inline-block text-lg mt-5">{{locale.text.artist_name}}:</label>
   	<table class="mt-3">
       <tbody>
         <tr>
@@ -27,22 +27,22 @@
           	</select>
           </td>
           <td class="py-1 w-full">
-          	<input id="en-name" class="px-3 py-2 rounded w-full" placeholder="Name" />
+          	<input id="en-name" class="px-3 py-2 rounded w-full" placeholder="{{locale.text.name}}" />
           </td>
         </tr>
       </tbody>
     <table>
 
-  	<label for="first-name" class="inline-block text-lg mt-5">Real Name:</label>
+  	<label for="first-name" class="inline-block text-lg mt-5">{{locale.text.real_name}}:</label>
   	<div class="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3">
-      <input id="first-name" type="text" name="first_name" class="px-3 py-2 rounded" placeholder="First Name" />
-      <input type="text" name="last_name" class="px-3 py-2 rounded" placeholder="Last Name" />
-      <input type="text" name="middle_name" class="px-3 py-2 rounded" placeholder="Middle Name" />
+      <input id="first-name" type="text" name="first_name" class="px-3 py-2 rounded" placeholder="{{locale.text.first_name}}" />
+      <input type="text" name="last_name" class="px-3 py-2 rounded" placeholder="{{locale.text.last_name}}" />
+      <input type="text" name="middle_name" class="px-3 py-2 rounded" placeholder="{{locale.text.middle_name}}" />
     </div>
 
     <input
       type="submit"
-      value="Submit"
+      value="{{locale.text.submit}}"
       class="text-lg mt-5 rounded bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 cursor-pointer"
     />
   </form>

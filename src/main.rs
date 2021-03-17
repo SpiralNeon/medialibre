@@ -26,6 +26,9 @@ pub struct Language {
 struct Locale {
   links: Vec<Link>,
   languages: Vec<Language>,
+  category: HashMap<String, String>,
+  heading: HashMap<String, String>,
+  text: HashMap<String, String>,
 }
 
 struct AppData {
@@ -53,7 +56,7 @@ async fn handle_js(app: web::Data<AppData>, file: web::Path<String>) -> HttpResp
     .body(data)
 }
 
-fn load_static() -> io::Result<HashMap<String, Vec<u8>>> {
+fn load_files() -> io::Result<HashMap<String, Vec<u8>>> {
   let mut files = HashMap::new();
 
   for entry in fs::read_dir("static/build")? {
@@ -105,7 +108,7 @@ async fn main() -> io::Result<()> {
     }
   };
 
-  let files = load_static()?;
+  let files = load_files()?;
   let locales = load_locales()?;
 
   let app = AppData { db, tera, files, locales };

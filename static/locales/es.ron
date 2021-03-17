@@ -13,4 +13,26 @@ Locale(
     (short: "fr", long: "Francés"),
     (short: "ja", long: "Japonés"),
   ],
+  category: {
+    "artists": "Artistas",
+    "releases": "Álbumes",
+    "labels": "Sellos discográficos",
+    "genres": "Géneros",
+  },
+  heading: {
+    "new_artist": "Nuevo artista",
+  },
+  text: {
+    "search": "Buscar",
+    "submit": "Enviar",
+    "type": "Tipo",
+    "group": "Grupo",
+    "person": "Persona",
+    "name": "Nombre",
+    "artist_name": "Nombre del artista",
+    "real_name": "Nombre real",
+    "first_name": "Nombre de pila",
+    "last_name": "Apellido",
+    "middle_name": "Segundo nombre",
+  },
 )
