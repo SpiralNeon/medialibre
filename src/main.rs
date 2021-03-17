@@ -27,6 +27,7 @@ pub struct Language {
 struct Locale {
   links: Vec<Link>,
   languages: Vec<Language>,
+  months: Vec<String>,
   category: HashMap<String, String>,
   heading: HashMap<String, String>,
   text: HashMap<String, String>,

@@ -47,6 +47,12 @@ struct CreateArtist {
   pub first_name: String,
   pub last_name: String,
   pub middle_name: String,
+  pub birth_year: u32,
+  pub birth_month: u32,
+  pub birth_day: u32,
+  pub death_year: u32,
+  pub death_month: u32,
+  pub death_day: u32,
 }
 
 async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -> HttpResponse {
@@ -66,13 +72,16 @@ async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -
     middle_name,
   };
 
-  let mut bio = HashMap::new();
-  bio.insert("en".into(), "".into());
+  let birth = Date {
+    year: if form.birth_year > 0 { Some(form.birth_year) } else { None },
+    month: if form.birth_month > 0 { Some(form.birth_month) } else { None },
+    day: if form.birth_day > 0 { Some(form.birth_day) } else { None },
+  };
 
-  let date = Date {
-    year: None,
-    month: None,
-    day: None,
+  let death = Date {
+    year: if form.death_year > 0 { Some(form.death_year) } else { None },
+    month: if form.death_month > 0 { Some(form.death_month) } else { None },
+    day: if form.death_day > 0 { Some(form.death_day) } else { None },
   };
 
   let loc = Location {
@@ -81,11 +90,14 @@ async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -
     city: None,
   };
 
+  let mut bio = HashMap::new();
+  bio.insert("en".into(), "".into());
+
   let artist = Artist {
     group,
     name,
-    birth: date.clone(),
-    death: date,
+    birth,
+    death,
     origin_location: loc.clone(),
     current_location: loc,
     members: Vec::new(),
