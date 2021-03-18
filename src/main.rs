@@ -1,4 +1,4 @@
-use std::{fs, collections::HashMap, io, sync::Mutex};
+use std::{fs, collections::HashMap, io, sync::Mutex, thread};
 use serde::{Serialize, Deserialize};
 use env_logger::Env;
 use actix_web::{web, middleware::Logger, App, HttpServer, HttpResponse};
@@ -8,11 +8,14 @@ use redis::Connection;
 use tera::Tera;
 
 mod api;
+mod clean;
 mod pages;
 mod util;
 
+use clean::clean_cache;
+
 #[derive(Serialize, Deserialize)]
-struct Link {
+pub struct Link {
   media: String,
   name: String,
 }
@@ -24,7 +27,7 @@ pub struct Language {
 }
 
 #[derive(Serialize, Deserialize)]
-struct Locale {
+pub struct Locale {
   links: Vec<Link>,
   languages: Vec<Language>,
   months: Vec<String>,
@@ -33,7 +36,7 @@ struct Locale {
   text: HashMap<String, String>,
 }
 
-struct AppData {
+pub struct AppData {
   db: Database,
   rdb: Mutex<Connection>,
   tera: Tera,
@@ -123,6 +126,9 @@ async fn main() -> io::Result<()> {
 
   let app = AppData { db, rdb, tera, files, locales };
   let app_ref = web::Data::new(app);
+
+  let app_clone = app_ref.clone();
+  thread::spawn(move || clean_cache(app_clone));
 
   HttpServer::new(move || {
     App::new()

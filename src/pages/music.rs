@@ -51,7 +51,7 @@ async fn artist(app: web::Data<AppData>, session: Session, web::Path(artist_id):
       context.insert("name", name);
       let data = app.tera.render("music/artist.html", &context).unwrap();
       let _: () = rdb.hset(key, lang, &data).unwrap();
-      let _: () = rdb.lpush("music-artists", artist_id).unwrap();
+      let _: () = rdb.sadd("music-artists", artist_id).unwrap();
       data
     },
   };
