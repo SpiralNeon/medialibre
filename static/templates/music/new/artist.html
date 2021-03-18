@@ -93,6 +93,20 @@
       />
     </div>
 
+    <label for="origin-country" class="inline-block text-lg mt-5">{{locale.text.origin_location}}:</label>
+    <div class="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <input id="origin-country" type="text" name="origin_country" class="px-3 py-2 rounded" placeholder="{{locale.text.country}}" />
+      <input type="text" name="origin_state" class="px-3 py-2 rounded" placeholder="{{locale.text.state}}" />
+      <input type="text" name="origin_city" class="px-3 py-2 rounded" placeholder="{{locale.text.city}}" />
+    </div>
+
+    <label for="current-country" class="inline-block text-lg mt-5">{{locale.text.current_location}}:</label>
+    <div class="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <input id="current-country" type="text" name="current_country" class="px-3 py-2 rounded" placeholder="{{locale.text.country}}" />
+      <input type="text" name="current_state" class="px-3 py-2 rounded" placeholder="{{locale.text.state}}" />
+      <input type="text" name="current_city" class="px-3 py-2 rounded" placeholder="{{locale.text.city}}" />
+    </div>
+
     <input
       type="submit"
       value="{{locale.text.submit}}"

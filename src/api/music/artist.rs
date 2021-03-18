@@ -53,6 +53,12 @@ struct CreateArtist {
   pub death_year: u32,
   pub death_month: u32,
   pub death_day: u32,
+  pub origin_country: String,
+  pub origin_state: String,
+  pub origin_city: String,
+  pub current_country: String,
+  pub current_state: String,
+  pub current_city: String,
 }
 
 async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -> HttpResponse {
@@ -84,10 +90,16 @@ async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -
     day: if form.death_day > 0 { Some(form.death_day) } else { None },
   };
 
-  let loc = Location {
-    country: None,
-    state: None,
-    city: None,
+  let origin_location = Location {
+    country: if form.origin_country.is_empty() { None } else { Some(form.origin_country.clone()) },
+    state: if form.origin_state.is_empty() { None } else { Some(form.origin_state.clone()) },
+    city: if form.origin_city.is_empty() { None } else { Some(form.origin_city.clone()) },
+  };
+
+  let current_location = Location {
+    country: if form.current_country.is_empty() { None } else { Some(form.current_country.clone()) },
+    state: if form.current_state.is_empty() { None } else { Some(form.current_state.clone()) },
+    city: if form.current_city.is_empty() { None } else { Some(form.current_city.clone()) },
   };
 
   let mut bio = HashMap::new();
@@ -98,8 +110,8 @@ async fn create_artist(app: web::Data<AppData>, form: web::Form<CreateArtist>) -
     name,
     birth,
     death,
-    origin_location: loc.clone(),
-    current_location: loc,
+    origin_location,
+    current_location,
     members: Vec::new(),
     bio,
     images: Vec::new(),

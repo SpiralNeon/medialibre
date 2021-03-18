@@ -53,5 +53,10 @@ Locale(
     "birth": "Fecha de nacimiento",
     "death": "Fecha de la muerte",
     "year": "Año",
+    "origin_location": "Ubicación de origen",
+    "current_location": "Ubicación actual",
+    "country": "País",
+    "state": "Estado",
+    "city": "Ciudad",
   },
 )
